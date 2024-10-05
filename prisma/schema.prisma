@@ -1,0 +1,44 @@
+datasource db {
+    provider = "postgresql"
+    url = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+}
+
+model Gender {
+    id Int @id @default(autoincrement())
+    genderName String @db.VarChar(50)
+    status Int @default(1)
+    books Book[]
+}
+
+model Editorial {
+    id Int @id @default(autoincrement())
+    editorialName String @db.VarChar(50)
+    status Int @default(1)
+    books Book[]
+}
+
+model Book {
+    id Int @id @default(autoincrement())
+    title String @db.VarChar(80)
+    status Int @default(1)
+    authorId Int
+    genderId Int
+    editorialId Int
+    author Author @relation(fields: [authorId], references: [id])
+    gender Gender @relation(fields: [genderId], references: [id])
+    editorial Editorial @relation(fields: [editorialId], references: [id])
+}
+
+model Author {
+    id Int @id @default(autoincrement())
+    firstName String @db.VarChar(80)
+    lastName String @db.VarChar(80)
+    books Book[]
+    status Int @default(1)
+}
+
